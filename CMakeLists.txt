@@ -4,6 +4,8 @@ project("wraithpad" VERSION 0.1.0 LANGUAGES C)
 set(SOURCES
     "src/main.c"
     "src/platform.h"
+    "src/keys.h"
+    "src/keys.c"
 )
 
 if(UNIX)
