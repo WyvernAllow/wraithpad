@@ -39,10 +39,6 @@ void wp_draw(struct wp_state *state) {
             char *welcome_message = "wraithpad editor -- version 0.1.0";
             int welcome_len = strlen(welcome_message);
 
-            if (welcome_len > state->screen_cols) {
-                welcome_message[state->screen_cols] = '\0';
-            }
-
             int padding = (state->screen_cols - welcome_len) / 2;
             if (padding) {
                 fputs("~", stdout);
@@ -97,6 +93,7 @@ void wp_update(struct wp_state *state) {
 
 int main(int argc, char **argv) {
     if(wp_enable_raw_mode() == -1) {
+        fputs("\x1b[2J", stdout);
         fprintf(stderr, "Failed to enable raw mode");
         return EXIT_FAILURE;
     }
@@ -110,9 +107,11 @@ int main(int argc, char **argv) {
     }
 
     if(wp_disable_raw_mode() == -1) {
+        fputs("\x1b[2J", stdout);
         fprintf(stderr, "Failed to disable raw mode");
         return EXIT_FAILURE;
     }
 
+    fputs("\x1b[2J", stdout);
     return EXIT_SUCCESS;
 }
