@@ -134,22 +134,30 @@ void wp_update(struct wp_state *state) {
 
     switch (key.type) {
     case WP_KEY_ARROW_UP:
-        state->cursor_y--;
+        if(state->cursor_y != 0) {
+            state->cursor_y--;
+        }
         break;
     case WP_KEY_ARROW_DOWN:
-        state->cursor_y++;
+        if(state->cursor_y != state->screen_rows - 1) {
+            state->cursor_y++;
+        }
         break;
     case WP_KEY_ARROW_LEFT:
-        state->cursor_x--;
+        if(state->cursor_x != 0) {
+            state->cursor_x--;
+        }
         break;
     case WP_KEY_ARROW_RIGHT:
-        state->cursor_x++;
+        if(state->cursor_x != state->screen_cols - 1) {
+            state->cursor_x++;
+        }
         break;
     case WP_KEY_ARROW_CHAR:
         if(key.character == WP_CTRL_KEY('q')) {
             state->is_running = false;
         }
-      break;
+        break;
     }
 }
 
