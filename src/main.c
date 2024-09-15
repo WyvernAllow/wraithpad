@@ -67,27 +67,89 @@ void wp_draw(struct wp_state *state) {
     fflush(stdout);
 }
 
-void wp_update(struct wp_state *state) {
+enum wp_key_type {
+    WP_KEY_ARROW_UP,
+    WP_KEY_ARROW_DOWN,
+    WP_KEY_ARROW_LEFT,
+    WP_KEY_ARROW_RIGHT,
+
+    WP_KEY_ARROW_CHAR,
+};
+
+struct wp_key {
+    enum wp_key_type type;
+    char character;
+};
+
+struct wp_key wp_make_key(enum wp_key_type type) {
+    struct wp_key key = {
+        .type = type,
+        .character = '\0'
+    };
+
+    return key;
+}
+
+struct wp_key wp_make_char(char c) {
+    struct wp_key key = {
+        .type = WP_KEY_ARROW_CHAR,
+        .character = c
+    };
+
+    return key;
+}
+
+struct wp_key wp_read_key() {
     char c;
     fread(&c, sizeof(c), 1, stdin);
 
-    switch (c) {
-    case 'a':
-        state->cursor_x--;
-        break;
-    case 'd':
-        state->cursor_x++;
-        break;
-    case 'w':
+    if(c == '\x1b') {
+        char seq[3];
+
+        if(fread(&seq[0], sizeof(char), 1, stdin) != 1) {
+            return wp_make_char('\x1b');
+        }
+
+        if(fread(&seq[1], sizeof(char), 1, stdin) != 1) {
+            return wp_make_char('\x1b');
+        }
+
+        if(seq[0] == '[') {
+            switch (seq[1]) {
+                case 'A': return wp_make_key(WP_KEY_ARROW_UP);
+                case 'B': return wp_make_key(WP_KEY_ARROW_DOWN);
+                case 'C': return wp_make_key(WP_KEY_ARROW_RIGHT);
+                case 'D': return wp_make_key(WP_KEY_ARROW_LEFT);
+            }
+        }
+
+        return wp_make_char('\x1b');
+    }
+
+    return wp_make_char(c);
+}
+
+void wp_update(struct wp_state *state) {
+    struct wp_key key = wp_read_key();
+
+    switch (key.type) {
+    case WP_KEY_ARROW_UP:
         state->cursor_y--;
         break;
-    case 's':
+    case WP_KEY_ARROW_DOWN:
         state->cursor_y++;
         break;
-
-    case WP_CTRL_KEY('q'):
-        state->is_running = false;
+    case WP_KEY_ARROW_LEFT:
+        state->cursor_x--;
         break;
+    case WP_KEY_ARROW_RIGHT:
+        state->cursor_x++;
+        break;
+    case WP_KEY_ARROW_CHAR:
+        if(key.character == WP_CTRL_KEY('q')) {
+            state->is_running = false;
+        }
+      break;
     }
 }
 
