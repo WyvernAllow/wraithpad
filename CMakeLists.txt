@@ -4,6 +4,7 @@ project("wraithpad" VERSION 0.1.0 LANGUAGES C)
 add_executable(${PROJECT_NAME}
     "src/main.c"
     "src/platform.h"
+    "src/platform.c"
     "src/keys.h"
     "src/keys.c"
 )
