@@ -14,6 +14,13 @@ else()
     target_compile_options(${PROJECT_NAME} PRIVATE -std=c99 -pedantic -Wall -Wextra)
 endif()
 
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/wp_version.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/wp_version.h
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+
 add_subdirectory(deps/glad)
 add_subdirectory(deps/glfw)
 add_subdirectory(deps/stb_truetype)
