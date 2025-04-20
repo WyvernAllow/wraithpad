@@ -16,8 +16,10 @@ endif()
 
 add_subdirectory(deps/glad)
 add_subdirectory(deps/glfw)
+add_subdirectory(deps/stb_truetype)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     glad
     glfw
+    stb_truetype
 )
