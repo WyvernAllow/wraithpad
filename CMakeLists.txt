@@ -32,3 +32,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     glfw
     stb_truetype
 )
+
+add_custom_target(copy_assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/res
+)
+
+add_dependencies(${PROJECT_NAME} copy_assets)
